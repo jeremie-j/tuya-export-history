@@ -1,0 +1,20 @@
+.device-row {
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 7px 5px;
+
+  width: 180px;
+  height: 30px;
+}
+
+.device-row > .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.device-row.active {
+  background-color: #2b55b2;
+}

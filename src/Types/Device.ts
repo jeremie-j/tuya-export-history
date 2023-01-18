@@ -3,6 +3,7 @@ export interface Device {
   id: string;
   created_at: number;
   model: string;
-  product_name: string;
+  category_name: string;
+  icon: string;
   online: boolean;
 }

@@ -1,0 +1,53 @@
+.aside {
+  display: flex;
+  flex-direction: column;
+
+  width: 214px;
+  height: 100vh;
+  border-right: 1px solid #5c5858;
+}
+
+.search-button {
+  display: flex;
+  width: 100%;
+  border-radius: 5px;
+  height: 28px;
+  border-radius: 5px;
+  background-color: #353131;
+  border: 1px solid #5c5858;
+}
+.search-button:focus-within {
+  border: 1px solid #386191;
+}
+
+.search-button > i {
+  padding-inline: 5px;
+}
+
+.search-button > input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+}
+.search-button > input:focus {
+  outline: none;
+}
+
+.aside > * {
+  padding-inline: 8px;
+}
+
+.aside > .header {
+  padding-block: 10px 5px;
+  border-bottom: 1px solid #5c5858;
+}
+
+.aside > ul {
+  list-style: none;
+  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+  padding-block: 5px;
+}

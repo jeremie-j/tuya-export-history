@@ -3,31 +3,43 @@ import sha256 from "crypto-js/sha256";
 
 import { invoke } from "@tauri-apps/api/tauri";
 
-// export const getAllDevices = async () => {
-//   const response = await apiRequestSigned(
-//     "/v1.3/iot-03/devices?" +
-//       new URLSearchParams({
-//         source_type: "tuyaUser",
-//         source_id: tuyaUserId,
-//       })
-//   );
-//   return response;
-// };
+interface RequestOptions {
+  path: string;
+  query?: { [key: string]: string };
+  body?: { [key: string]: string } | string;
+}
+
+interface HttpRequestBuilder {
+  method: string;
+  url: string;
+  query?: { [key: string]: string };
+  headers?: { [key: string]: string };
+  body?: { [key: string]: string } | string;
+  timeout?: Number;
+}
+
+interface Token {
+  access_token: string;
+  expire_time: number;
+  refresh_token: string;
+}
+
+interface Response {}
 
 export class TuyaClient {
   baseUrl = import.meta.env.VITE_TUYABASEURL;
   accessKey = import.meta.env.VITE_ACCESSKEY;
   secretKey = import.meta.env.VITE_SECRETKEY;
   tuyaUserId = import.meta.env.VITE_TUYAUSERID;
-  accessToken: string = "";
+  tokenInfo: Token | null = null;
 
-  calculateSign = (
+  public calculateSign(
     method: string,
     path: string,
     timestamp: Date | number,
-    param?: URLSearchParams,
+    param: URLSearchParams,
     body?: { [key: string]: string }
-  ) => {
+  ) {
     let stringToSign = method + "\n";
     stringToSign +=
       sha256(body ? JSON.stringify(body) : "")
@@ -35,22 +47,28 @@ export class TuyaClient {
         .toLowerCase() + "\n";
     stringToSign += "\n";
     stringToSign += path;
-    if (param) {
+
+    if (Array.from(param).length > 0) {
       param.sort();
       stringToSign += "?" + param.toString();
     }
     let message = this.accessKey;
-    if (this.accessToken) {
-      message += this.accessToken;
+    if (this.tokenInfo) {
+      message += this.tokenInfo.access_token;
     }
     message += String(timestamp) + stringToSign;
-    return hmac256(message, this.secretKey).toString().toUpperCase();
-  };
 
-  public async requestSigned(options: RequestOptions) {
+    return hmac256(message, this.secretKey).toString().toUpperCase();
+  }
+
+  public async requestSigned(method: string, options: RequestOptions) {
+    if (this.tokenInfo != null && !options.path.startsWith("/v1.0/token")) {
+      this.refreshAccessTokenIfNeeded();
+    }
+
     const timestamp = Date.now();
     const sign = this.calculateSign(
-      options.method,
+      method,
       options.path,
       timestamp,
       new URLSearchParams(options.query),
@@ -59,12 +77,11 @@ export class TuyaClient {
 
     const headers = {
       client_id: this.accessKey,
-      access_token: this.accessToken,
+      access_token: this.tokenInfo?.access_token || "",
       sign: sign,
       sign_method: "HMAC-SHA256",
       t: String(timestamp),
       lang: "en",
-      "Content-Type": "application/json",
     };
 
     const requestBuilder: HttpRequestBuilder = {
@@ -77,39 +94,40 @@ export class TuyaClient {
     let data: any = await invoke("fetch", {
       options: requestBuilder,
     });
-    console.log(data);
-    return data;
+
+    if (data.success) {
+      return data.result;
+    } else {
+      throw new Error(data.msg);
+    }
   }
 
-  public async getAccessToken() {
-    const response = await this.requestSigned({
-      method: "GET",
+  public async connect() {
+    const response = await this.get({
       path: "/v1.0/token",
       query: {
         grant_type: "1",
       },
     });
-    this.accessToken = response.result.access_token;
+    response.expire_time = Date.now() + response.expire_time * 1000;
+    this.tokenInfo = response;
   }
-}
 
-interface RequestOptions {
-  method: string;
-  path: string;
-  query?: { [key: string]: string };
-  body?: { [key: string]: string } | string;
-}
+  async refreshAccessTokenIfNeeded() {
+    if (this.tokenInfo) {
+      if (Date.now() < this.tokenInfo.expire_time) {
+        return;
+      } else {
+        const response = await this.get({
+          path: "/v1.0/token/" + this.tokenInfo.refresh_token,
+        });
+        this.tokenInfo = response;
+      }
+    }
+  }
 
-interface HttpRequestBuilder {
-  /// The request method (GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS, CONNECT or TRACE)
-  method: string;
-  url: string;
-  /// The request query params
-  query?: { [key: string]: string };
-  /// The request headers
-  headers?: { [key: string]: string };
-  /// The request body
-  body?: { [key: string]: string } | string;
-  /// Timeout for the whole request
-  timeout?: Number;
+  async get(options: RequestOptions) {
+    const response = await this.requestSigned("GET", options);
+    return response;
+  }
 }

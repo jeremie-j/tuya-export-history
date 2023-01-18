@@ -1,0 +1,16 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+}
+
+.empty-state.sub-text {
+  font-size: 20px;
+}
+
+.empty-state > div {
+  margin-block: 20px;
+}

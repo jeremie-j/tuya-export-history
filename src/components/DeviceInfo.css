@@ -1,0 +1,39 @@
+div.device-info-container {
+  width: 100%;
+  padding-inline: 10px;
+}
+div.device-info-container > h2 {
+  margin-block: 10px;
+}
+
+div.device-info-container .export-selector {
+  margin-block: 10px;
+}
+
+div.device-info-container .export-selector > p {
+  margin-bottom: -5px;
+}
+
+.export-selector input,
+.export-selector select {
+  width: 200px;
+}
+
+table.code-table {
+  width: 50%;
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  overflow: hidden;
+}
+
+table.code-table td {
+  padding: 5px;
+  border: 1px solid #fff;
+  border-collapse: collapse;
+  border-radius: 5px;
+}
+
+.header {
+  padding-block: 10px 5px;
+}

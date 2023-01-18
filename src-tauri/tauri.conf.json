@@ -21,6 +21,10 @@
         "all": true,
         "request": true,
         "scope": ["https://openapi.tuyaeu.com/*"]
+      },
+      "fs": {
+        "writeFile": true,
+        "scope": ["$DOWNLOAD/*"]
       }
     },
     "bundle": {
@@ -38,7 +42,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.tuya-history-export.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -67,8 +71,8 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "tuya-history",
-        "width": 800
+        "title": "Tuya History Export Tool",
+        "width": 900
       }
     ]
   }
