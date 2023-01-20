@@ -24,8 +24,6 @@ interface Token {
   refresh_token: string;
 }
 
-interface Response {}
-
 export class TuyaClient {
   baseUrl = import.meta.env.VITE_TUYABASEURL;
   accessKey = import.meta.env.VITE_ACCESSKEY;

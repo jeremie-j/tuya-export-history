@@ -68,6 +68,7 @@ export default defineComponent({
       let requestCount = 0;
       const endate =
         param["end_hour"] || param["end_day"] || param["end_month"];
+
       while (
         (last_value == null || last_value[0] < endate) &&
         requestCount < 10
@@ -78,11 +79,11 @@ export default defineComponent({
           param["start_day"] = last_value[0];
           param["start_month"] = last_value[0];
         }
+
         const result = await store.tuyaClient.get({
           path: `/v1.0/devices/${device.value.id}/statistics/${editedForm.value.granularity}`,
           query: {
             code: editedForm.value.statCode,
-            stat_type: editedForm.value.statType,
             ...param,
           },
         });
@@ -222,7 +223,7 @@ export default defineComponent({
               >
                 {/* <option value="hours">Hours</option> */}
                 <option value="days">Days</option>
-                <option value="month">Month</option>
+                <option value="months">Month</option>
               </select>
             </div>
             <input
