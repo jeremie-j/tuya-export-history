@@ -49,5 +49,6 @@ Tested on Macos, Windows, should work on linux too.
 - [ ] Add notification when an export is done
 - [ ] Create a unique file by export
 - [ ] Add descriptions for export form fields
+- [ ] Add an icon for the app
 
 Feel free to open any review for code fix or additions of features
