@@ -25,8 +25,8 @@ With theses infos, you can create a .env file at the root of the project with th
 ```TOML
 VITE_ACCESSKEY= # Your client id
 VITE_SECRETKEY= # Your client secret
-VITE_TUYABASEURL=https://openapi.tuyaeu.com # The domain depend of your region, ex: .tuyacn.com for china
-VITE_TUYAUSERID= # The UID of the linked map
+VITE_TUYABASEURL= # https://openapi.tuyaeu.com # The domain depend of your region, ex: .tuyacn.com for china
+VITE_TUYAUSERID= # The UID of the linked tuya app account
 ```
 
 At this point, you have almost finished, with npm version 18, just `npm i` and then `npm run tauri dev` to check everything is working, then you can build you app with `npm run tauri build` (you may need to install rust / webview for tauri to work https://tauri.app/v1/guides/getting-started/prerequisites/)
